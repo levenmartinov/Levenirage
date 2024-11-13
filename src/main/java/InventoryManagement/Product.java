@@ -1,8 +1,6 @@
 package InventoryManagement;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -46,6 +44,73 @@ public class Product {
         return 10000;
 
     }
+
+    public static void saveCounter(int counter) {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(COUNTER_FILE))) {
+            writer.write(String.valueOf(counter));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public static int getCounter() {
+        return counter;
+    }
+
+    public static void setCounter(int counter) {
+        Product.counter = counter;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public int getShelf() {
+        return shelf;
+    }
+
+    public void setShelf(int shelf) {
+        this.shelf = shelf;
+    }
+
 
 
 

@@ -1,2 +1,9 @@
-package InventoryManagement;public interface Management {
+package InventoryManagement;
+
+public interface Management {
+
+
+
+
+
 }
