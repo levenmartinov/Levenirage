@@ -14,9 +14,9 @@ public class Product {
     private String supplierName;
     private int quantity;
     private String unit;
-    private int shelf;
+    private String shelf;
 
-    public Product(String sku, String productName, String supplierName, int quantity, String unit, int shelf) {
+    public Product(String sku, String productName, String supplierName, int quantity, String unit, String shelf) {
         this.sku = sku;
         this.productName = productName;
         this.supplierName = supplierName;
@@ -103,11 +103,11 @@ public class Product {
         this.unit = unit;
     }
 
-    public int getShelf() {
+    public String getShelf() {
         return shelf;
     }
 
-    public void setShelf(int shelf) {
+    public void setShelf(String shelf) {
         this.shelf = shelf;
     }
 
