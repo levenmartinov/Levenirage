@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ProductSave {
+public class ProductSaveService {
 
     private static final String FILE_PATH = "products.json";
 
