@@ -18,7 +18,7 @@ public class Utils {
     }
 
     //Validate and get a valid integer within a specific range
-    public static Integer checkIntegerRange(String prompt, int min, int max) {
+/*    public static Integer checkIntegerRange(String prompt, int min, int max) {
 
         Integer validInteger = null;
 
@@ -43,11 +43,11 @@ public class Utils {
 
         }
         return validInteger;
-    }
+    }*/
 
     // Format product output for consistent display
     public static String formatProduct(Product product) {
-        return String.format("%-20s | %-20s | %-20s | %-10d | %-10s | %-10s",
+        return String.format("%-20s %-20s %-20s %-15s %-10s %-10s%n",
                 product.getSku(),
                 product.getProductName(),
                 product.getSupplierName(),

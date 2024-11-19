@@ -2,7 +2,6 @@ package InventoryManagement;
 
 import java.util.PriorityQueue;
 import java.util.Scanner;
-
 public class Start {
 
     static Scanner sc = new Scanner(System.in);
@@ -11,8 +10,8 @@ public class Start {
 
         ProductService productService = new ProductService(new PriorityQueue<>()); //Creating a product service
         mainMenu(productService);
-
     }
+
     public static void mainMenu(ProductService productService) {
 
         int select;
@@ -26,13 +25,14 @@ public class Start {
             System.out.println("5- Product output");
             System.out.println("6- Remove a product");
             System.out.println("7- Clear all products");
-            System.out.println("8- updateProduct");
-            System.out.println("9- searchProduct");
+            System.out.println("8- For update product");
+            System.out.println("9- For search product");
             System.out.println("0- EXIT");
             System.out.print("\nSelect an Option: ");
 
+
             while (!sc.hasNextInt()) {
-                System.out.println("Invalid input! Please enter a number between 0 and 7.");
+                System.out.println("Invalid input! Please enter a number between 0 and 8.");
                 sc.next(); //Clear if input is invalid
             }
             select = sc.nextInt();
@@ -81,12 +81,12 @@ public class Start {
                 }
 
                 case 8 -> {
-                    System.out.println("updateProduct");
+                    System.out.println("For update product...");
                     productService.updateProduct(productService.products);
                 }
 
                 case 9 -> {
-                    System.out.println("searchProduct");
+                    System.out.println("For search product...");
                     productService.searchProduct(productService.products);
                 }
 

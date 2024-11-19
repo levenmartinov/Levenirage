@@ -27,23 +27,22 @@ public class Product {
 
     //Static method that loads counter value from file
     public static int loadCounter() {
-
         try {
-
             if (Files.exists(Paths.get(COUNTER_FILE))) {
-
                 BufferedReader reader = new BufferedReader(new FileReader(COUNTER_FILE));
                 String line = reader.readLine();
                 reader.close();
-                return Integer.parseInt(line);
 
+                if (line != null && !line.trim().isEmpty()) {
+                    return Integer.parseInt(line.trim());
+                }
             }
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             e.printStackTrace();
         }
-        return 10000;
-
+        return 10000; // Varsayılan başlangıç değeri
     }
+
 
     public static void saveCounter(int counter) {
 

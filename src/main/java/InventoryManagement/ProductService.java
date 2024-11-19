@@ -6,7 +6,7 @@ import java.util.*;
 
 public class ProductService implements Management {
 
-    Map<String, Product> products = new LinkedHashMap<>();
+    Map<String, Product> products;
 
     Scanner sc = new Scanner(System.in);
 
@@ -22,7 +22,7 @@ public class ProductService implements Management {
     @Override
     public void addProduct(Map<String, Product> products) {
 
-        Product pr = new Product(null, null, null, 0, null, " ");
+        Product pr = new Product(null, null, null, 0, null, null);
 
         System.out.println("Enter a product name : ");
         String productName = sc.nextLine().toUpperCase().trim();
@@ -102,7 +102,7 @@ public class ProductService implements Management {
         }
     }
 
-    // Ürünün miktarını günceller
+   /* // Ürünün miktarını günceller
     public void enterProduct(Map<String, Product> products) {
         System.out.print("Enter the product ID to update quantity: ");
         String productSku = sc.nextLine().trim();
@@ -183,6 +183,251 @@ public class ProductService implements Management {
     }
 
 
+
+
+    public void updateProduct(Map<String, Product> products) {
+
+
+        if (!Utils.isProductAvailable(this.products)) return;
+
+        System.out.print("--Please enter the ID of the product you want to update: ");
+        String id = sc.nextLine().toUpperCase().trim();
+
+
+        if (this.products.containsKey(id)) {
+            Product product = this.products.get(id);
+
+            System.out.println("You may leave fields blank to keep them unchanged. ");
+
+            System.out.print("New Product Name (leave blank to keep unchanged) : ");
+            String newName = sc.nextLine().toUpperCase().trim();
+            if (!newName.trim().isEmpty()) {
+                product.setProductName(newName);
+            }
+
+            System.out.print("New shelf number (leave blank to keep unchanged) : ");
+            Utils newShelf = new Utils();
+            if (newShelf != null) {
+                product.setShelf("SHELF" + newShelf);
+            }
+
+            System.out.println("--Product information updated successfully.--");
+        } else {
+            System.out.println("--No product found with this ID.--");
+        }
+        sc.nextLine();
+        // Güncellenen ürünü dosyaya kaydet
+        saveService.saveToFile(this.products);
+    }*/
+
+    public void updateProduct(Map<String, Product> products) {
+        System.out.print("Enter the product ID to update: ");
+        String productSku = sc.nextLine().trim();
+        Product product = products.get(productSku);
+
+        if (product == null) {
+            System.out.println("The ID you have entered is not on the list. Please check again.");
+            return;
+        }
+
+        // Kullanıcıdan hangi işlemi yapmak istediğini soruyoruz.
+        System.out.println("What would you like to update?");
+        System.out.println("1. Update Quantity");
+        System.out.println("2. Place Product on Shelf");
+        System.out.println("3. Update Product Information");
+        System.out.print("Enter your choice: ");
+
+        int choice;
+        while (!sc.hasNextInt()) {
+            System.out.println("Invalid input! Please enter a valid number (1-3).");
+            sc.next();
+        }
+        choice = sc.nextInt();
+        sc.nextLine(); // Satır sonunu temizle.
+
+        switch (choice) {
+            case 1: // Stok Güncelleme
+                updateQuantity(product);
+                break;
+
+            case 2: // Raf Yerleştirme
+                placeOnShelf(product, products);
+                break;
+
+            case 3: // Ürün Bilgisi Güncelleme
+                updateInfo(product);
+                break;
+
+            default:
+                System.out.println("Invalid choice. No changes made.");
+                break;
+        }
+
+        // Güncellenen ürünü dosyaya kaydet
+        saveService.saveToFile(products);
+    }
+
+    // Stok güncelleme işlevi
+    private void updateQuantity(Product product) {
+        int quantity;
+        do {
+            System.out.print("Enter the quantity to add: ");
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a numeric value for quantity.");
+                sc.next();
+            }
+            quantity = sc.nextInt();
+            sc.nextLine();
+            if (quantity <= 0) {
+                System.out.println("Quantity should be a positive number.");
+            }
+        } while (quantity <= 0);
+
+        product.setQuantity(product.getQuantity() + quantity);
+        System.out.println("Product quantity updated successfully. NEW STOCK: " + product.getQuantity());
+    }
+
+    // Raf yerleştirme işlevi
+    private void placeOnShelf(Product product, Map<String, Product> products) {
+        int shelfNo;
+        boolean isShelfAvailable = false;
+        do {
+            System.out.print("Enter a positive shelf number: ");
+
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a valid positive integer for the Shelf Number.");
+                sc.next();
+            }
+            shelfNo = sc.nextInt();
+            sc.nextLine();
+
+            if (shelfNo < 0) {
+                System.out.println("Shelf number must be a positive integer. Please try again.");
+                continue;
+            }
+
+            isShelfAvailable = true; // Kontrol başlangıcı için varsayılan değer.
+            for (Product p : products.values()) {
+                if (p.getShelf() != null && p.getShelf().equals("SHELF" + shelfNo)) {
+                    System.out.println("This shelf is already occupied. Try a different one.");
+                    isShelfAvailable = false;
+                    break;
+                }
+            }
+
+        } while (!isShelfAvailable);
+
+        product.setShelf("SHELF" + shelfNo);
+        System.out.println("Product placed on shelf " + product.getShelf() + " successfully.");
+    }
+
+    // Ürün bilgisi güncelleme işlevi
+    private void updateInfo(Product product) {
+        System.out.println("You may leave fields blank to keep them unchanged.");
+
+        System.out.print("New Product Name (leave blank to keep unchanged): ");
+        String newName = sc.nextLine().toUpperCase().trim();
+        if (!newName.isEmpty()) {
+            product.setProductName(newName);
+        }
+
+        System.out.print("New shelf number (leave blank to keep unchanged): ");
+        String newShelf = sc.nextLine().trim();
+        if (!newShelf.isEmpty()) {
+            product.setShelf("SHELF" + newShelf);
+        }
+
+        System.out.println("--Product information updated successfully.--");
+
+        sc.nextLine();
+        // Güncellenen ürünü dosyaya kaydet
+        saveService.saveToFile(this.products);
+
+
+    }
+
+
+
+
+    public void searchProduct(Map<String, Product> products) {
+
+        if (!Utils.isProductAvailable(products)) {
+            System.out.println("--Returning to main menu as there are no products available.--");
+            return;
+        }
+
+        boolean continueSearch = true;
+        while (continueSearch) {
+            System.out.println("----Please Select a Search Type----");
+            System.out.println("1-Search by Product Name");
+            System.out.println("2-Search by Supplier Name");
+            System.out.println("3-Search for Products Below a Certain Quantity");
+            System.out.println("4-Search by Shelf Number");
+            System.out.println("0-Return to Main Menu");
+
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            PriorityQueue<Product> searchResults = new PriorityQueue<>(
+                    Comparator.comparing(Product::getSku)  // Adjust comparator as needed
+            );
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Product Name to Search: ");
+                    String name = sc.nextLine();
+                    products.values().stream()
+                            .filter(p -> p.getProductName().equalsIgnoreCase(name))
+                            .forEach(searchResults::offer);
+                    break;
+                case 2:
+                    System.out.print("Enter Supplier Name to Search: ");
+                    String supplier = sc.nextLine();
+                    products.values().stream()
+                            .filter(p -> p.getSupplierName().equalsIgnoreCase(supplier))
+                            .forEach(searchResults::offer);
+                    break;
+                case 3:
+                    System.out.print("Enter Maximum Quantity: ");
+                    int maxQuantity = sc.nextInt();
+                    products.values().stream()
+                            .filter(p -> p.getQuantity() <= maxQuantity)
+                            .forEach(searchResults::offer);
+                    break;
+                case 4:
+                    System.out.print("Enter Shelf Number to Search: ");
+                    String shelf = sc.nextLine();
+                    products.values().stream()
+                            .filter(p -> p.getShelf() != null && p.getShelf().equalsIgnoreCase(shelf))
+                            .forEach(searchResults::offer);
+                    break;
+                case 0:
+                    System.out.println("Returning to main menu...");
+                    continueSearch = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please select a number between 0 and 4.");
+                    continue;
+            }
+
+            if (choice != 0) {
+                if (searchResults.isEmpty()) {
+                    System.out.println("--No products found matching your criteria.--");
+                } else {
+                    System.out.printf("%-20s %-20s %-20s %-15s %-10s %-10s%n", "~~SKU~~", "PRODUCT NAME", "SUPPLIER NAME", "QUANTITY", "UNIT", "SHELF");
+                    System.out.printf("%-20s %-20s %-20s %-15s %-10s %-10s%n", "-------", "------------", "-------------", "--------", "----", "-----");
+                    searchResults.forEach(product -> System.out.println(Utils.formatProduct(product)));
+                }
+                System.out.println("\n~~~~~Search completed~~~~~\n");
+            }
+        }
+        sc.nextLine();
+        // Güncellenen ürünü dosyaya kaydet
+        saveService.saveToFile(this.products);
+
+
+    }
+
     // Ürün çıkışı yapar
     public void productOutput(Map<String, Product> products) {
         System.out.print("Enter the product ID for output: ");
@@ -219,6 +464,7 @@ public class ProductService implements Management {
         saveService.saveToFile(this.products);
     }
 
+
     // Ürünü listeden kaldırır
     public void removeProduct(Map<String, Product> products) {
         System.out.print("Enter the product ID to remove: ");
@@ -236,6 +482,8 @@ public class ProductService implements Management {
         // Güncellenen listeyi dosyaya kaydet
         saveService.saveToFile(this.products);
     }
+
+
 
     // Listeyi tamamen sıfırlar
     public void clearProducts(Map<String, Product> products) {
@@ -266,117 +514,9 @@ public class ProductService implements Management {
         saveService.saveToFile(this.products);
     }
 
-    public void updateProduct(Map<String, Product> products) {
-
-        if (!Utils.isProductAvailable(this.products)) return;
-
-        System.out.print("--Please enter the ID of the product you want to update: ");
-        String id = sc.nextLine().trim();
-
-        if (this.products.containsKey(id)) {
-            Product product = this.products.get(id);
-
-            System.out.println("You may leave fields blank to keep them unchanged.");
-
-            System.out.print("New Product Name (leave blank to keep unchanged): ");
-            String newName = sc.nextLine();
-            if (!newName.trim().isEmpty()) {
-                product.setProductName(newName);
-            }
-
-            System.out.print("New Shelf (between 100 and 999, leave blank to keep unchanged): ");
-            Integer newShelf = Utils.checkIntegerRange("New Shelf Number: ", 100, 999);
-            if (newShelf != null) {
-                product.setShelf("SHELF" + newShelf);
-            }
-
-            System.out.println("--Product information updated successfully.--");
-        } else {
-            System.out.println("--No product found with this ID.--");
-        }
-        sc.nextLine();
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
-    }
 
 
-    public void searchProduct(Map<String, Product> products) {
 
-        if (!Utils.isProductAvailable(products)) {
-            System.out.println("--Returning to main menu as there are no products available.--");
-            return;
-        }
-
-        boolean continueSearch = true;
-        while (continueSearch) {
-            System.out.println("----Please Select a Search Type----");
-            System.out.println("1-Search by Product Name");
-            System.out.println("2-Search by Manufacturer Name");
-            System.out.println("3-Search for Products Below a Certain Quantity");
-            System.out.println("4-Search by Shelf Number");
-            System.out.println("0-Return to Main Menu");
-
-            int choice = sc.nextInt();
-            sc.nextLine();
-
-            PriorityQueue<Product> searchResults = new PriorityQueue<>(
-                    Comparator.comparing(Product::getSku)  // Adjust comparator as needed
-            );
-
-            switch (choice) {
-                case 1:
-                    System.out.print("Enter Product Name to Search: ");
-                    String name = sc.nextLine();
-                    products.values().stream()
-                            .filter(p -> p.getProductName().equalsIgnoreCase(name))
-                            .forEach(searchResults::offer);
-                    break;
-                case 2:
-                    System.out.print("Enter Manufacturer Name to Search: ");
-                    String manufacturer = sc.nextLine();
-                    products.values().stream()
-                            .filter(p -> p.getSupplierName().equalsIgnoreCase(manufacturer))
-                            .forEach(searchResults::offer);
-                    break;
-                case 3:
-                    System.out.print("Enter Maximum Quantity: ");
-                    int maxQuantity = sc.nextInt();
-                    products.values().stream()
-                            .filter(p -> p.getQuantity() <= maxQuantity)
-                            .forEach(searchResults::offer);
-                    break;
-                case 4:
-                    System.out.print("Enter Shelf Number to Search: ");
-                    String shelf = sc.nextLine();
-                    products.values().stream()
-                            .filter(p -> p.getShelf() != null && p.getShelf().equalsIgnoreCase(shelf))
-                            .forEach(searchResults::offer);
-                    break;
-                case 0:
-                    System.out.println("Returning to main menu...");
-                    continueSearch = false;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please select a number between 0 and 4.");
-                    continue;
-            }
-
-            if (choice != 0) {
-                if (searchResults.isEmpty()) {
-                    System.out.println("--No products found matching your criteria.--");
-                } else {
-                    System.out.printf("%-20s %-20s %-20s %-15s %-10s %-10s%n", "SKU", "PRODUCT NAME", "SUPPLIER NAME", "QUANTITY", "UNIT", "SHELF");
-                    searchResults.forEach(product -> System.out.println(Utils.formatProduct(product)));
-                }
-                System.out.println("--Search completed.--");
-            }
-        }
-        sc.nextLine();
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
-
-
-    }
 
 
 

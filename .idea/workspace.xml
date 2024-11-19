@@ -5,10 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97baa9d8-1552-41c2-a355-43b52fb1ba00" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/MainMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/Start.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/counter.txt" beforeDir="false" afterPath="$PROJECT_DIR$/counter.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/products.json" beforeDir="false" afterPath="$PROJECT_DIR$/products.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/InventoryManagement/Management.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/Management.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/InventoryManagement/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/Product.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/InventoryManagement/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/InventoryManagement/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/Start.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/InventoryManagement/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/Utils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,6 +60,7 @@
   "keyToString": {
     "Application.Start.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "onboarding.tips.debug.path": "C:/Users/Leven IT/IdeaProjects/Levenirage/src/main/java/org/example/Main.java",
