@@ -44,20 +44,53 @@ public class ProductService implements Management {
             }
         }
 
-
-        int productQuantity;
+        int productQuantity = 0; // Değişken başlatıldı
         do {
+            System.out.println("Enter a quantity (or type 'M' to return to the main menu): ");
+            String input = sc.nextLine().trim(); // Girdiyi al ve baştaki/sondaki boşlukları temizle
+
+            // Ana menüye dönme kontrolü
+            if (input.equalsIgnoreCase("M")) { // Kullanıcı 'M' veya 'm' girerse
+                System.out.println("Returning to the main menu...");
+                return; // Ana menüye döner
+            }
+
+            // Boş kontrolü
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty! Please enter a valid quantity.");
+                continue; // Döngüyü başa döndür
+            }
+
+            // Sayısal kontrol
+            try {
+                productQuantity = Integer.parseInt(input);
+                if (productQuantity <= 0) {
+                    System.out.println("Quantity should be a positive number.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a numeric value for quantity.");
+            }
+        } while (productQuantity <= 0);
+
+// Burada ürün miktarı işlemleri devam eder
+        System.out.println("Quantity successfully entered: " + productQuantity);
+
+
+
+
+/*        do {
             System.out.println("Enter a quantity : ");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input! Please enter a numeric value for quantity.");
                 sc.next(); //clear wrong input
             }
             productQuantity = sc.nextInt();
-            sc.nextLine(); //hataa olbilirr daha sonra kotrol et ve bu yorumu sil
+            //sc.nextLine(); //hataa olbilirr daha sonra kotrol et ve bu yorumu sil
             if (productQuantity <= 0) {
                 System.out.println("Quantity should be a positive number.");
             }
-        } while (productQuantity <= 0);
+        } while (productQuantity <= 0);*/
+
 
 
         int shelfNo;
@@ -105,6 +138,8 @@ public class ProductService implements Management {
         pr.setShelf("SHELF" + shelfNo); // Shelf değerini ayarla
         productSku(pr);  // Ürün ID'sini ayarla
         products.put(pr.getSku(), pr); // Ürünü Map'e ekle
+
+        sc.nextLine();
 
         // Counter dosyasına güncel değeri yaz
         Product.saveCounter(Product.counter);
