@@ -62,14 +62,6 @@ public class Product {
         this.sku = sku;
     }
 
-    public static int getCounter() {
-        return counter;
-    }
-
-    public static void setCounter(int counter) {
-        Product.counter = counter;
-    }
-
     public String getProductName() {
         return productName;
     }

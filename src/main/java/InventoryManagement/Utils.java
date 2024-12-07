@@ -17,33 +17,6 @@ public class Utils {
         return true;
     }
 
-    //Validate and get a valid integer within a specific range
-/*    public static Integer checkIntegerRange(String prompt, int min, int max) {
-
-        Integer validInteger = null;
-
-        while (validInteger == null) {
-            System.out.println(prompt);
-
-            String input = sc.nextLine();
-
-            if (input.isEmpty()) return null; //Allow empty input for optional fields
-
-            try {
-                int value = Integer.parseInt(input);
-                if (value >= min && value <= max) {
-                    validInteger = value;
-                }else {
-                    System.out.println("Please enter a number between " + min + " and " + max + ".");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a valid integer.");
-            }
-
-        }
-        return validInteger;
-    }*/
 
     // Format product output for consistent display
     public static String formatProduct(Product product) {

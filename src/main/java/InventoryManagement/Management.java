@@ -13,19 +13,9 @@ public interface Management {
     void updateProduct(Map<String, Product> products);
 
     void searchProduct(Map<String, Product> products);
-   /* void enterProduct(Map<String, Product> products);
-
-
-    void putProductOnShelf(Map<String, Product> products);
-*/
-    void productOutput(Map<String, Product> products);
 
     void removeProduct(Map<String, Product> products);
 
     void clearProducts(Map<String, Product> products);
-
-
-
-
 
 }

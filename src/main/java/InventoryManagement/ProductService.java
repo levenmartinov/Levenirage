@@ -1,6 +1,5 @@
 package InventoryManagement;
 
-import java.security.PublicKey;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -13,7 +12,7 @@ public class ProductService implements Management {
     ProductSaveService saveService = new ProductSaveService();
     private PriorityQueue<Object> searchResults;
 
-    public ProductService (PriorityQueue<Object> searchResults) {
+    public ProductService() {
         this.searchResults = searchResults;
         products = saveService.loadFromFile();
     }
@@ -26,6 +25,7 @@ public class ProductService implements Management {
 
         System.out.println("Enter a product name : ");
         String productName = sc.nextLine().toUpperCase().trim();
+
         System.out.println("Enter a supplier name : ");
         String supplierName = sc.nextLine().toUpperCase().trim();
 
@@ -47,7 +47,7 @@ public class ProductService implements Management {
 
         int productQuantity;
         do {
-            System.out.println("Enter a quantity");
+            System.out.println("Enter a quantity : ");
             while (!sc.hasNextInt()) {
                 System.out.println("Invalid input! Please enter a numeric value for quantity.");
                 sc.next(); //clear wrong input
@@ -60,12 +60,49 @@ public class ProductService implements Management {
         } while (productQuantity <= 0);
 
 
+        int shelfNo;
+
+        boolean isShelfAvailable = false;
+
+        do {
+            System.out.print("Enter a positive shelf number : \n");
+
+
+            while (!sc.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a valid positive integer for the Shelf Number.");
+                sc.next();
+            }
+
+            shelfNo = sc.nextInt();
+
+
+            if (shelfNo < 0) {
+                System.out.println("Shelf number must be a positive integer. Please try again.");
+                continue;
+            }
+
+            isShelfAvailable = true;// Kontrol başlangıcı için varsayılan değer.
+
+            for (Product p : products.values()) {
+                if (p.getShelf() != null && p.getShelf().equals("SHELF" + shelfNo)) {
+
+                    System.out.println("This shelf is already occupied. Try a different one.");
+                    isShelfAvailable = false;
+                    break;
+                }
+
+            }
+
+
+        } while (!isShelfAvailable);
+
 
         // Ürün özelliklerini ayarla ve SKU'yi oluştur
         pr.setProductName(productName);
         pr.setSupplierName(supplierName);
         pr.setQuantity(productQuantity);
         pr.setUnit(unit);
+        pr.setShelf("SHELF" + shelfNo); // Shelf değerini ayarla
         productSku(pr);  // Ürün ID'sini ayarla
         products.put(pr.getSku(), pr); // Ürünü Map'e ekle
 
@@ -102,124 +139,6 @@ public class ProductService implements Management {
         }
     }
 
-   /* // Ürünün miktarını günceller
-    public void enterProduct(Map<String, Product> products) {
-        System.out.print("Enter the product ID to update quantity: ");
-        String productSku = sc.nextLine().trim();
-        Product product = products.get(productSku);
-
-        if (product != null) {
-            int quantity;
-            do {
-                System.out.print("Enter the quantity to add: ");
-                while (!sc.hasNextInt()) {
-                    System.out.println("Invalid input! Please enter a numeric value for quantity.");
-                    sc.next();
-                }
-                quantity = sc.nextInt();
-                sc.nextLine();
-                if (quantity <= 0) {
-                    System.out.println("Quantity should be a positive number.");
-                }
-            } while (quantity <= 0);
-            // Miktarı güncelle
-            product.setQuantity(product.getQuantity() + quantity);
-            System.out.println("Product quantity updated successfully. NEW STOCK: " + product.getQuantity());
-        } else {
-            System.out.println("The ID you have entered is not on the list. Please check again.");
-        }
-
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
-    }
-
-
-    public void putProductOnShelf(Map<String, Product> products) {
-        System.out.print("Enter the product ID to place on the shelf: ");
-        String productSku = sc.nextLine().trim();
-        Product product = products.get(productSku);
-
-        if (product != null) {
-            int shelfNo;
-            boolean isShelfAvailable = true; // Başlangıç değeri atanıyor.
-
-            do {
-                System.out.print("Enter a positive shelf number: ");
-
-                // Kullanıcıdan sadece int türünde giriş alınmasını sağlıyoruz.
-                while (!sc.hasNextInt()) {
-                    System.out.println("Invalid input! Please enter a valid positive integer for the Shelf Number.");
-                    sc.next(); // Geçersiz girişi atla.
-                }
-                shelfNo = sc.nextInt();
-                sc.nextLine(); // Satır sonunu temizle.
-
-                if (shelfNo < 0) {
-                    System.out.println("Shelf number must be a positive integer. Please try again.");
-                    continue; // Negatif değer girdiyse yeniden döngüye dön.
-                }
-
-                // Rafın dolu olup olmadığını kontrol et
-                isShelfAvailable = true; // Kontrol başlangıcı için varsayılan değer.
-                for (Product p : products.values()) {
-                    if (p.getShelf() != null && p.getShelf().equals("SHELF" + shelfNo)) {
-                        System.out.println("This shelf is already occupied. Try a different one.");
-                        isShelfAvailable = false;
-                        break;
-                    }
-                }
-
-            } while (!isShelfAvailable);
-
-            // Ürünü rafa yerleştir
-            product.setShelf("SHELF" + shelfNo);
-            System.out.println("Product placed on shelf " + product.getShelf() + " successfully.");
-        } else {
-            System.out.println("The ID you have entered is not on the list. Please check again.");
-        }
-
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
-    }
-
-
-
-
-    public void updateProduct(Map<String, Product> products) {
-
-
-        if (!Utils.isProductAvailable(this.products)) return;
-
-        System.out.print("--Please enter the ID of the product you want to update: ");
-        String id = sc.nextLine().toUpperCase().trim();
-
-
-        if (this.products.containsKey(id)) {
-            Product product = this.products.get(id);
-
-            System.out.println("You may leave fields blank to keep them unchanged. ");
-
-            System.out.print("New Product Name (leave blank to keep unchanged) : ");
-            String newName = sc.nextLine().toUpperCase().trim();
-            if (!newName.trim().isEmpty()) {
-                product.setProductName(newName);
-            }
-
-            System.out.print("New shelf number (leave blank to keep unchanged) : ");
-            Utils newShelf = new Utils();
-            if (newShelf != null) {
-                product.setShelf("SHELF" + newShelf);
-            }
-
-            System.out.println("--Product information updated successfully.--");
-        } else {
-            System.out.println("--No product found with this ID.--");
-        }
-        sc.nextLine();
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
-    }*/
-
     public void updateProduct(Map<String, Product> products) {
         System.out.print("Enter the product ID to update: ");
         String productSku = sc.nextLine().trim();
@@ -231,11 +150,11 @@ public class ProductService implements Management {
         }
 
         // Kullanıcıdan hangi işlemi yapmak istediğini soruyoruz.
-        System.out.println("What would you like to update?");
-        System.out.println("1. Update Quantity");
-        System.out.println("2. Place Product on Shelf");
-        System.out.println("3. Update Product Information");
-        System.out.print("Enter your choice: ");
+        System.out.println("\nWhat would you like to update?\n");
+        System.out.println("1. Update Quantity On Products : ");
+        System.out.println("2. Update Shelf in Warehouse : ");
+        System.out.println("3. Update All Products Informations");
+        System.out.print("\nEnter your choice: \n");
 
         int choice;
         while (!sc.hasNextInt()) {
@@ -247,7 +166,7 @@ public class ProductService implements Management {
 
         switch (choice) {
             case 1: // Stok Güncelleme
-                updateQuantity(product);
+                updateQuantity(products);
                 break;
 
             case 2: // Raf Yerleştirme
@@ -259,7 +178,7 @@ public class ProductService implements Management {
                 break;
 
             default:
-                System.out.println("Invalid choice. No changes made.");
+                System.out.println("Invalid choice. Please select a number between 0 and 4.");
                 break;
         }
 
@@ -267,24 +186,79 @@ public class ProductService implements Management {
         saveService.saveToFile(products);
     }
 
-    // Stok güncelleme işlevi
-    private void updateQuantity(Product product) {
-        int quantity;
-        do {
-            System.out.print("Enter the quantity to add: ");
+
+    // Stok güncelleme işlevi (artırma veya azaltma)
+    private void updateQuantity (Map<String, Product> products) {
+        System.out.print("Enter the product ID: ");
+        String productSku = sc.nextLine().trim();
+        Product product = products.get(productSku);
+
+        if (product != null) {
+            System.out.println("\nDo you want to:");
+            System.out.println("1. Add stock");
+            System.out.println("2. Remove stock");
+            System.out.print("Enter your choice (1 or 2): \n");
+
+            int choice;
             while (!sc.hasNextInt()) {
-                System.out.println("Invalid input! Please enter a numeric value for quantity.");
+                System.out.println("Invalid input! Please enter 1 or 2.");
                 sc.next();
             }
-            quantity = sc.nextInt();
-            sc.nextLine();
-            if (quantity <= 0) {
-                System.out.println("Quantity should be a positive number.");
-            }
-        } while (quantity <= 0);
+            choice = sc.nextInt();
+            sc.nextLine(); // Satır sonunu temizle
 
-        product.setQuantity(product.getQuantity() + quantity);
-        System.out.println("Product quantity updated successfully. NEW STOCK: " + product.getQuantity());
+            if (choice == 1) {
+                // Stok artırma
+                int quantity;
+                do {
+                    System.out.print("Enter the quantity to add: \n");
+                    while (!sc.hasNextInt()) {
+                        System.out.println("Invalid input! Please enter a numeric value for quantity.");
+                        sc.next();
+                    }
+                    quantity = sc.nextInt();
+                    sc.nextLine();
+                    if (quantity <= 0) {
+                        System.out.println("Quantity should be a positive number.");
+                    }
+                } while (quantity <= 0);
+
+                product.setQuantity(product.getQuantity() + quantity);
+                System.out.println("Product quantity updated successfully. NEW STOCK: " + product.getQuantity());
+
+            } else if (choice == 2) {
+                // Stok azaltma
+                int quantity;
+                do {
+                    System.out.print("Enter the quantity to remove: \n");
+                    while (!sc.hasNextInt()) {
+                        System.out.println("Invalid input! Please enter a numeric value for quantity.");
+                        sc.next();
+                    }
+                    quantity = sc.nextInt();
+                    sc.nextLine();
+
+                    // Mevcut stok miktarını kontrol et
+                    if (quantity > product.getQuantity()) {
+                        System.out.println("Insufficient quantity in stock. MAXIMUM AVAILABLE: " + product.getQuantity());
+                    } else if (quantity <= 0) {
+                        System.out.println("Quantity should be a positive number.");
+                    }
+                } while (quantity <= 0 || quantity > product.getQuantity());
+
+                // Miktarı azalt
+                product.setQuantity(product.getQuantity() - quantity);
+                System.out.println("Product output successful. REMAINING STOCK: " + product.getQuantity());
+            } else {
+                System.out.println("Invalid choice. Please enter 1 or 2.");
+                return;
+            }
+
+            // Güncellenen ürünü dosyaya kaydet
+            saveService.saveToFile(products);
+        } else {
+            System.out.println("The ID you have entered is not on the list. Please check again.");
+        }
     }
 
     // Raf yerleştirme işlevi
@@ -319,32 +293,72 @@ public class ProductService implements Management {
 
         product.setShelf("SHELF" + shelfNo);
         System.out.println("Product placed on shelf " + product.getShelf() + " successfully.");
+
+        // Güncellenen ürünü dosyaya kaydet
+        saveService.saveToFile(products);
     }
+
 
     // Ürün bilgisi güncelleme işlevi
     private void updateInfo(Product product) {
-        System.out.println("You may leave fields blank to keep them unchanged.");
+        System.out.println("You may leave fields blank to keep them unchanged!!!\n");
 
-        System.out.print("New Product Name (leave blank to keep unchanged): ");
+        System.out.print("New Product Name (leave blank to keep unchanged) : \n");
         String newName = sc.nextLine().toUpperCase().trim();
-        if (!newName.isEmpty()) {
+        boolean nameUpdated = false;
+        String oldSku = product.getSku(); // Eski SKU'yu kaydet
+
+        if (!newName.isEmpty() && !newName.equals(product.getProductName())) {
             product.setProductName(newName);
+            updateSku(product); // Yeni SKU oluştur
+            nameUpdated = true;
+            System.out.println("Product name and SKU updated successfully.\n");
         }
 
-        System.out.print("New shelf number (leave blank to keep unchanged): ");
-        String newShelf = sc.nextLine().trim();
-        if (!newShelf.isEmpty()) {
-            product.setShelf("SHELF" + newShelf);
+        System.out.print("New Supplier Name (leave blank to keep unchanged) : \n");
+        String newSupplierName = sc.nextLine().toUpperCase().trim();
+        if (!newSupplierName.isEmpty() && !newSupplierName.equals(product.getSupplierName())) {
+            product.setSupplierName(newSupplierName);
+            System.out.println("Supplier name updated successfully.\n");
         }
 
-        System.out.println("--Product information updated successfully.--");
+        System.out.print("New Unit (leave blank to keep unchanged) : \n");
+        String newUnit = sc.nextLine().toUpperCase().trim();
+        if (!newUnit.isEmpty() && !newUnit.equals(product.getUnit())) {
+            product.setUnit(newUnit);
+            System.out.println("Unit updated successfully.\n");
+        }
 
-        sc.nextLine();
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
+        // Eski SKU ile yeni SKU aynı değilse eski kaydı sil ve yeni SKU ile ekle
+        if (nameUpdated) {
+            products.remove(oldSku); // Eski SKU'yu sil
+            products.put(product.getSku(), product); // Yeni SKU ile ekle
+        }
 
+        if (!nameUpdated && newName.isEmpty() && newSupplierName.isEmpty() && newUnit.isEmpty()) {
+            System.out.println("No changes were made as all fields were left blank.\n");
+        } else {
+            System.out.println("Updated Product Information :\n");
+            System.out.printf("SKU: %s | Name: %s | Supplier: %s | Unit: %s\n",
+                    product.getSku(), product.getProductName(), product.getSupplierName(), product.getUnit());
+            System.out.println("\n");
+        }
 
+        saveService.saveToFile(products); // Dosyaya kaydet
     }
+
+    private void updateSku(Product product) {
+        try {
+            String newSku = product.getProductName().substring(0, 2) + LocalDate.now().getYear() + Product.counter;
+            Product.counter++; // Benzersiz yapıcı sayaç artırımı
+            product.setSku(newSku); // Yeni SKU ayarla
+        } catch (StringIndexOutOfBoundsException e) {
+            product.setSku("NULL" + LocalDate.now().getYear() + Product.counter);
+            Product.counter++;
+        }
+    }
+
+
 
 
 
@@ -428,42 +442,6 @@ public class ProductService implements Management {
 
     }
 
-    // Ürün çıkışı yapar
-    public void productOutput(Map<String, Product> products) {
-        System.out.print("Enter the product ID for output: ");
-        String productSku = sc.nextLine().trim();
-        Product product = products.get(productSku);
-
-        if (product != null) {
-            int quantity;
-            do {
-                System.out.print("Enter the quantity to remove: ");
-                while (!sc.hasNextInt()) {
-                    System.out.println("Invalid input! Please enter a numeric value for quantity.");
-                    sc.next();
-                }
-                quantity = sc.nextInt();
-                sc.nextLine();
-
-                // Mevcut stok miktarını kontrol et
-                if (quantity > product.getQuantity()) {
-                    System.out.println("Insufficient quantity in stock. MAXIMUM AVAILABLE: " + product.getQuantity());
-                } else if (quantity <= 0) {
-                    System.out.println("Quantity should be a positive number.");
-                }
-            } while (quantity <= 0 || quantity > product.getQuantity());
-
-            // Miktarı azalt
-            product.setQuantity(product.getQuantity() - quantity);
-            System.out.println("Product output successful. REMAINING STOCK: " + product.getQuantity());
-        } else {
-            System.out.println("The ID you have entered is not on the list. Please check again.");
-        }
-
-        // Güncellenen ürünü dosyaya kaydet
-        saveService.saveToFile(this.products);
-    }
-
 
     // Ürünü listeden kaldırır
     public void removeProduct(Map<String, Product> products) {
@@ -482,7 +460,6 @@ public class ProductService implements Management {
         // Güncellenen listeyi dosyaya kaydet
         saveService.saveToFile(this.products);
     }
-
 
 
     // Listeyi tamamen sıfırlar
@@ -513,22 +490,6 @@ public class ProductService implements Management {
         // Ürün listesi temizlendikten veya iptal edildikten sonra, mevcut durumu dosyaya kaydet
         saveService.saveToFile(this.products);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
