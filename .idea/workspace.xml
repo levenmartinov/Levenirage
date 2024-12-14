@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97baa9d8-1552-41c2-a355-43b52fb1ba00" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/InventoryManagement/HibernateUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/counter.txt" beforeDir="false" afterPath="$PROJECT_DIR$/counter.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/products.json" beforeDir="false" afterPath="$PROJECT_DIR$/products.json" afterDir="false" />
@@ -41,6 +43,9 @@
         <option name="workspaceImportForciblyTurnedOn" value="true" />
       </MavenImportingSettings>
     </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0

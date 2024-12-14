@@ -1,5 +1,7 @@
 package InventoryManagement;
 
+
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -15,6 +17,7 @@ public class ProductService implements Management {
     public ProductService() {
         this.searchResults = searchResults;
         products = saveService.loadFromFile();
+
     }
 
 
@@ -31,6 +34,8 @@ public class ProductService implements Management {
 
         System.out.println("Enter a packaging unit : ");
         String unit = sc.nextLine().toUpperCase().trim();
+
+
 
         //Check if the same product is available
         for (Product w : products.values()) {
@@ -140,6 +145,7 @@ public class ProductService implements Management {
         products.put(pr.getSku(), pr); // Ürünü Map'e ekle
 
         sc.nextLine();
+
 
         // Counter dosyasına güncel değeri yaz
         Product.saveCounter(Product.counter);
